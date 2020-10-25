@@ -15,12 +15,9 @@ name_program = argv[1]
 
 with open(name_program, 'r') as f:
     for line in f:
-        if line.startswith('!'):
-            continue
-        elif not line:
-            continue
-        elif ignore[0] in line or ignore[1] in line or ignore[2] in line:
-            continue
-        else:
-            print(line.rstrip())
-        
+        if not line.startswith("!"):
+            for word in ignore:
+                if line.find(word) != -1:
+                    break
+            else:
+                print(line.rstrip())

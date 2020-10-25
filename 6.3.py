@@ -20,7 +20,12 @@ trunk будут другие номера интерфейсов, код дол
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 """
 
-
+access_template = [
+    "switchport mode access",
+    "switchport access vlan",
+    "spanning-tree portfast",
+    "spanning-tree bpduguard enable",
+]
 
 trunk_template = [
     "switchport trunk encapsulation dot1q",
@@ -28,17 +33,29 @@ trunk_template = [
     "switchport trunk allowed vlan",
 ]
 
+access = {"0/12": "10", "0/14": "11", "0/16": "17", "0/17": "150"}
 trunk = {"0/1": ["add", "10", "20"], "0/2": ["only", "11", "30"], "0/4": ["del", "17"]}
 
+for intf, vlan in access.items():
+    print("interface FastEthernet" + intf)
+    for command in access_template:
+        if command.endswith("access vlan"):
+            print(f" {command} {vlan}")
+        else:
+            print(f" {command}")
+
+
+print('----------')
 
 for intf, vlan in trunk.items():
     print("interface FastEthernet" + intf)
     for command in trunk_template:
-        if command.endswith("allowed vlan") and vlan[0] == 'add':
-            print(f" {command} {vlan[0]} {vlan[1]},{vlan[2]}")
-        elif command.endswith("allowed vlan") and vlan[0] == 'only':
-            print(f" {command} {vlan[1]},{vlan[2]}")
-        elif command.endswith("allowed vlan") and vlan[0] == 'del':
-            print(f" {command} remove {vlan[1]}")
+        if command.endswith("allowed vlan"):
+            if vlan[0]=="add":
+                print("{} {}".format(command, 'add '+', '.join(vlan[1:])))
+            elif vlan[0]=="del":
+                print("{} {}".format(command,'remove '+', '.join(vlan[1:])))
+            elif vlan[0]=="only":
+                print("{} {}".format(command,', '.join(vlan[1:])))
         else:
             print(f" {command}")

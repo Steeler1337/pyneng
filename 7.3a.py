@@ -19,34 +19,12 @@
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 """
 
-vlans = []
-sorted_vlans = []
-
-
-sorted_distinct_vlans = []
-
-with open('CAM_table.txt', 'r') as f:
+info = dict()
+stroka = 0
+with open("CAM_table.txt", 'r') as f:
     for line in f:
-        if 'DYNAMIC' in line:
-            splitted_line = line.split()
-            vlans.append(int(splitted_line[0]))
-    sorted_vlans = sorted(vlans)
-print(sorted_vlans)
-
-
-for i in range(len(sorted_vlans)):
-    if sorted_vlans[i] not in sorted_distinct_vlans:
-        sorted_distinct_vlans.append(sorted_vlans[i])
-print(sorted_distinct_vlans)    
-
-    
-with open('CAM_table.txt', 'r') as f:
-    for vlan in sorted_distinct_vlans:
-        for line in f:
-            if 'DYNAMIC' in line:
-                splitted_line = line.split()
-                if int(splitted_line[0]) == vlan:
-                    info = '''
-                    {:<10} {:<20} {:<6}
-                    '''
-                    print(info.format(vlan, splitted_line[1], splitted_line[3]))
+        if line.find('.')>=1:
+            stroka += 1 
+            info[stroka] = int(line.split()[0]), line.split()[1], line.split()[3]
+for stroka in sorted(info.values()):
+    print('{:<8} {:<18} {:<10}'.format(stroka[0],stroka[1],stroka[2]))
