@@ -36,7 +36,13 @@ def create_network_map(filenames):
     global_dict = {}
     for name in filenames:
         with open(name, 'r') as f:
-           global_dict.update(parse_cdp_neighbors(f.read()))
+            current_dict = parse_cdp_neighbors(f.read())
+            current_dict_copy = current_dict.copy()
+            for k, v in current_dict.items():
+                for k1, v1 in global_dict.items():
+                    if k == v1 and k1 == v:
+                        del current_dict_copy[k]
+            global_dict.update(current_dict_copy)
     return global_dict
 
 if __name__ == "__main__":
